@@ -1,0 +1,96 @@
+import math
+
+from segment_tree import *
+
+arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+
+t = SegmentTree(arr)
+
+
+# fitting array into segment tree where t is taken as object of segment tree
+# t will be used for performing operations on that segmentTree
+
+
+class SegmentationTree():
+    def __init__(self, input_list):
+        self._input_list = input_list [:] # copy of input list
+        self._init_tree()
+        self._is_propogated = True
+
+    def _init_tree(self):
+        ### CREATE SEGMENTATION TREE INFRASTRUCTURE ###
+
+        ### lenght of list
+        self._n = len(self._input_list)
+
+        ### calc. of height
+        height = math.ceil(math.log(self._n, 2)) # ciel = aufrunden!
+
+        ### calc. number of nodes
+        n_nodes = 2 * (2 ** height) - 1
+
+        ### create empty seg_tree_
+        self._seg_tree = [None] * n_nodes
+
+        ### propogate (fill) seg_tree_
+        arr_left = 0 # leftest element of array = index 0
+        arr_right = self._n - 1 # rightest element of array = index = lenght of array -1
+        seg_node_index = 0 # root of seg tree = index 0
+        self._propogate(arr_left, arr_right, seg_node_index)
+
+    def _propogate(self, arr_left, arr_right, seg_node_index): # arr_ = original arry
+        # recursive implementation
+        # Base Cases needed
+        if arr_right < arr_left: # went too far
+            return
+        if arr_left == arr_right: # when seg tree index = array list index
+            # grab value from input list
+            value = self._input_list[arr_left] # or arr_right since they'd be the same in this case
+            # assign value into seg_tree at correct index
+            self._seg_tree[seg_node_index] = value
+            return
+
+        # recursive call = we're at a parent node and need to split into 2
+        midpoint = (arr_left + arr_right) // 2 # floor division, will put extra on left side
+
+        # left side
+        left_seg_node_index = seg_node_index * 2 + 1
+        left_node_array_left = arr_left
+        left_node_arr_right = midpoint
+        self._propogate(left_node_array_left, left_node_arr_right, left_seg_node_index)
+
+        # right side
+        right_seg_node_index = seg_node_index * 2 + 2
+        right_node_array_left = midpoint + 1 # might go over (base case for that)
+        right_node_arr_right = arr_right
+        self._propogate(right_node_array_left, right_node_arr_right, right_seg_node_index)
+
+        # handle the parent
+        left_val = self._seg_tree[left_seg_node_index]
+        right_val = self._seg_tree[right_seg_node_index]
+        self._seg_tree[seg_node_index] = left_val + right_val # aggregation = sum
+
+
+st = SegmentationTree(arr)
+print(st._seg_tree)
+
+
+### OPERATIONS ###
+
+
+# finding value of maximum number in a range
+a = t.query(2, 9, "max") # (start index, end index, operation)
+print("The maximum value of this range is : ", a)
+
+# finding the value of minimum number in a range
+a = t.query(2, 9, "min")
+print("The minimum value of this range is : ", a)
+
+# finding the value of sum of a range
+a = t.query(2, 7, "sum")
+print("The sum of this range is : ", a)
+
+# updating the value of a particular index -> here: index '2' with the number 25
+t.update(2, 25) # (index, value)
+print("The updated array is : ", arr)
+
