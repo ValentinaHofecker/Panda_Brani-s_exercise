@@ -2,7 +2,7 @@ import math
 
 from segment_tree import *
 
-arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+arr = [5, 8, 7, 2, 10, 2, 2]
 
 t = SegmentTree(arr)
 
@@ -79,18 +79,18 @@ print(st._seg_tree)
 
 
 # finding value of maximum number in a range
-a = t.query(2, 9, "max") # (start index, end index, operation)
+a = t.query(4, 6, "max") # (start index, end index, operation)
 print("The maximum value of this range is : ", a)
 
 # finding the value of minimum number in a range
-a = t.query(2, 9, "min")
+a = t.query(4, 6, "min")
 print("The minimum value of this range is : ", a)
 
 # finding the value of sum of a range
-a = t.query(2, 7, "sum")
+a = t.query(4, 6, "sum")
 print("The sum of this range is : ", a)
 
 # updating the value of a particular index -> here: index '2' with the number 25
-t.update(2, 25) # (index, value)
+t.update(5, 15) # (index, value)
 print("The updated array is : ", arr)
 
